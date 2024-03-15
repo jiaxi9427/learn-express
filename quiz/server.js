@@ -41,15 +41,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/write/adduser', addMsgToRequest);
 
-app.post('/write/adduser', (req, res) => {
-  let newuser = req.body;
-  req.users.push(newuser);
-  fs.writeFile(path.resolve(__dirname, '../data/users.json'), JSON.stringify(req.users), (err) => {
-    if (err) console.log('Failed to write');
-    else console.log('User Saved');
-  });
-  res.send('done');
-})
+app.get('/read/username/:name', (req, res) => {
+  const username = req.params.name;
+  const user = req.users.find(user => user.username === username);
+  if (user) {
+    res.status(200).send({ email: user.email });
+  } else {
+    res.status(404).send('User not found');
+  }
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
